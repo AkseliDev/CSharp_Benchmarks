@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Iced.Intel;
+using Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
-public class ByteSum {
+public class ByteSum : IBenchmark {
 
     private byte[] _data;
 

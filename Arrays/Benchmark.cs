@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using Library;
+using System.Reflection;
 
-BenchmarkRunner.Run<IntSum>();
-BenchmarkRunner.Run<ByteSum>();
+IBenchmark.SelectBenchmarks(Assembly.GetExecutingAssembly());
