@@ -117,7 +117,7 @@ public class IntSum : IBenchmark {
         ref int start = ref MemoryMarshal.GetArrayDataReference(data);
 
         int sum = 0;
-        for(int i = 0; i < data.Length; i++) {
+        for(nint i = 0; i < data.Length; i++) {
             sum += Unsafe.Add(ref start, i);
         }
         return sum;
@@ -152,7 +152,7 @@ public class IntSum : IBenchmark {
         ref int start = ref MemoryMarshal.GetArrayDataReference(data);
 
         int sum = 0;
-        int i;
+        nint i;
         for(i = 0; i < data.Length - 4; i += 4) {
             sum += Unsafe.Add(ref start, i);
             sum += Unsafe.Add(ref start, i + 1);
@@ -199,7 +199,7 @@ public class IntSum : IBenchmark {
         var data = _data;
         ref int r0 = ref MemoryMarshal.GetArrayDataReference(data);
         Vector256<int> sum = Vector256<int>.Zero;
-        int i = 0;
+        nint i = 0;
         while (data.Length - i >= Vector256<int>.Count * 8) {
             sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i));
             sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count));

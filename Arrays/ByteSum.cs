@@ -121,7 +121,7 @@ public class ByteSum : IBenchmark {
         ref byte start = ref MemoryMarshal.GetArrayDataReference(data);
         
         int sum = 0;
-        for (int i = 0; i < data.Length; i++) {
+        for (nint i = 0; i < data.Length; i++) {
             sum += Unsafe.Add(ref start, i);
         }
         return sum;
@@ -156,7 +156,7 @@ public class ByteSum : IBenchmark {
         ref byte start = ref MemoryMarshal.GetArrayDataReference(data);
 
         int sum = 0;
-        int i;
+        nint i;
         for (i = 0; i < data.Length - 4; i += 4) {
             sum += Unsafe.Add(ref start, i);
             sum += Unsafe.Add(ref start, i + 1);
