@@ -6,8 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 
-BenchmarkRunner.Run<IntSum>();
-
 public class IntSum {
 
     private int[] _data;
@@ -95,9 +93,11 @@ public class IntSum {
 
     [Benchmark]
     public int For_Unsafe_RefMath() {
-        
-        ref int start = ref MemoryMarshal.GetArrayDataReference(_data);
-        ref int end = ref Unsafe.Add(ref start, _data.Length);
+
+        var data = _data;
+
+        ref int start = ref MemoryMarshal.GetArrayDataReference(data);
+        ref int end = ref Unsafe.Add(ref start, data.Length);
         
         int sum = 0;
         
@@ -111,9 +111,12 @@ public class IntSum {
 
     [Benchmark]
     public int For_Unsafe_RefIndexing() {
-        ref int start = ref MemoryMarshal.GetArrayDataReference(_data);
+
+        var data = _data;
+        ref int start = ref MemoryMarshal.GetArrayDataReference(data);
+
         int sum = 0;
-        for(int i = 0; i < _data.Length; i++) {
+        for(int i = 0; i < data.Length; i++) {
             sum += Unsafe.Add(ref start, i);
         }
         return sum;
@@ -121,8 +124,11 @@ public class IntSum {
 
     [Benchmark]
     public int For_Unsafe_Unrolled_RefMath() {
-        ref int start = ref MemoryMarshal.GetArrayDataReference(_data);
-        ref int end = ref Unsafe.Add(ref start, _data.Length);
+
+        var data = _data;
+        ref int start = ref MemoryMarshal.GetArrayDataReference(data);
+        ref int end = ref Unsafe.Add(ref start, data.Length);
+
         int sum = 0;
         while(Unsafe.ByteOffset(ref start, ref end) >= 4 * sizeof(int)) {
             sum += start;
@@ -140,8 +146,10 @@ public class IntSum {
 
     [Benchmark]
     public int For_Unsafe_Unrolled_RefIndexing() {
+
         var data = _data;
-        ref int start = ref MemoryMarshal.GetArrayDataReference(_data);
+        ref int start = ref MemoryMarshal.GetArrayDataReference(data);
+
         int sum = 0;
         int i;
         for(i = 0; i < data.Length - 4; i += 4) {
