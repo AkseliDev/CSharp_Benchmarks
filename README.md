@@ -5,4 +5,5 @@ Set of C# benchmarks, the goal is to create the most optimized solution and stud
 ## Table of Contents
 - Benchmarks
   - [Arrays](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays)
-    - [Sum](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#Sum)
+    - [IntSum](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#IntSum)
+    - [ByteSum](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#ByteSum)
