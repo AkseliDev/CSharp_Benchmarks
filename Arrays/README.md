@@ -36,6 +36,7 @@ Results:
 |                 Vectorized_V256 | 1000 |  49.68 ns | 0.312 ns | 0.277 ns |
 |        Vectorized_V256_Unrolled | 1000 |  32.59 ns | 0.167 ns | 0.148 ns |
 | Vectorized_V256_UnrolledAddress | 1000 |  28.17 ns | 0.044 ns | 0.039 ns |
+| Vectorized_V256_UnrolledIndexing | 1000 |  28.14 ns | 0.044 ns | 0.039 ns |
 
 ### ByteSum
 
@@ -67,4 +68,5 @@ Results:
 |                      Vectorized_WidenLoad | 1000 |  26.04 ns | 0.041 ns | 0.036 ns |
 |          Vectorized_WidenLoad_CustomWiden | 1000 |  23.13 ns | 0.128 ns | 0.113 ns |
 | Vectorized_WidenLoad_CustomWiden_Unrolled | 1000 |  18.67 ns | 0.028 ns | 0.025 ns |
+| Vectorized_WidenLoad_CustomWiden_Unrolled_Indexing | 1000 | 18.69 ns | 0.055 ns | 0.046 ns |
 
