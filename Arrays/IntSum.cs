@@ -12,15 +12,13 @@ public class IntSum : IBenchmark {
     private int[] _data;
 
     [Params(1000)]
-    public int Size { get; set; }// = 1000;
+    public int Size { get; set; }
 
     [GlobalSetup]
     public void GlobalSetup() {
         _data = Enumerable.Range(0, Size).ToArray();
-        //Console.WriteLine(Vectorized_V256_UnrolledAddress());
-        //Console.WriteLine(Vectorized_V256_UnrolledIndexing());
     }
-    /*
+    
     [Benchmark]
     public int For() {
         var data = _data;
@@ -222,7 +220,7 @@ public class IntSum : IBenchmark {
         }
         return result;
     }
-    */
+    
     [Benchmark]
     public int Vectorized_V256_UnrolledAddress() {
         var data = _data;

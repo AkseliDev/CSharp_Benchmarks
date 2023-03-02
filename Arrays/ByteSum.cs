@@ -30,7 +30,7 @@ public class ByteSum : IBenchmark {
 
         _data = data;
     }
-    /*
+    
     [Benchmark]
     public int For() {
         var data = _data;
@@ -377,7 +377,7 @@ public class ByteSum : IBenchmark {
         }
         return result;
     }
-    */
+    
     // same as Vectorized_WidenLoad_CustomWiden but unrolled for maximum performance
     [Benchmark]
     public int Vectorized_WidenLoad_CustomWiden_Unrolled() {
@@ -464,6 +464,7 @@ public class ByteSum : IBenchmark {
         return result;
     }
 
+    // same as Vectorized_WidenLoad_CustomWiden but unrolled for maximum performance and with indexing
     [Benchmark]
     public int Vectorized_WidenLoad_CustomWiden_Unrolled_Indexing() {
         var data = _data;
