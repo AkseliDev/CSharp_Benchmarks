@@ -12,13 +12,15 @@ public class IntSum : IBenchmark {
     private int[] _data;
 
     [Params(1000)]
-    public int Size { get; set; }
+    public int Size { get; set; }// = 1000;
 
     [GlobalSetup]
     public void GlobalSetup() {
         _data = Enumerable.Range(0, Size).ToArray();
+        //Console.WriteLine(Vectorized_V256_UnrolledAddress());
+        //Console.WriteLine(Vectorized_V256_UnrolledIndexing());
     }
-
+    /*
     [Benchmark]
     public int For() {
         var data = _data;
@@ -220,7 +222,7 @@ public class IntSum : IBenchmark {
         }
         return result;
     }
-
+    */
     [Benchmark]
     public int Vectorized_V256_UnrolledAddress() {
         var data = _data;
@@ -260,6 +262,43 @@ public class IntSum : IBenchmark {
         while (Unsafe.IsAddressLessThan(ref r0, ref end)) {
             result += r0;
             r0 = ref Unsafe.Add(ref r0, 1);
+        }
+        return result;
+    }
+
+    [Benchmark]
+    public int Vectorized_V256_UnrolledIndexing() {
+        var data = _data;
+        ref int r0 = ref MemoryMarshal.GetArrayDataReference(data);
+        Vector256<int> sum = Vector256<int>.Zero;
+        nint i = 0;
+        if (data.Length >= Vector256<int>.Count * 8) {
+            for(; i <= data.Length - Vector256<int>.Count * 8; i += Vector256<int>.Count * 8) {
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 2));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 3));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 4));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 5));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 6));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 7));
+            }
+            if (i <= data.Length - Vector256<int>.Count * 4) {
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 2));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 3));
+                i += Vector256<int>.Count * 4;
+            }
+            if (i <= data.Length - Vector256<int>.Count * 2) {
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i));
+                sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count));
+                i += Vector256<int>.Count * 2;
+            }
+        }
+        int result = Vector256.Sum(sum);
+        for(; i < data.Length; i++) {
+            result += Unsafe.Add(ref r0, i);
         }
         return result;
     }

@@ -4,6 +4,7 @@ using Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -29,7 +30,7 @@ public class ByteSum : IBenchmark {
 
         _data = data;
     }
-
+    /*
     [Benchmark]
     public int For() {
         var data = _data;
@@ -39,7 +40,7 @@ public class ByteSum : IBenchmark {
         }
         return sum;
     }
-
+    
     [Benchmark]
     public int ForEach() {
         int sum = 0;
@@ -376,7 +377,7 @@ public class ByteSum : IBenchmark {
         }
         return result;
     }
-
+    */
     // same as Vectorized_WidenLoad_CustomWiden but unrolled for maximum performance
     [Benchmark]
     public int Vectorized_WidenLoad_CustomWiden_Unrolled() {
@@ -459,6 +460,71 @@ public class ByteSum : IBenchmark {
         while (Unsafe.IsAddressLessThan(ref ptr, ref end)) {
             result += ptr;
             ptr = ref Unsafe.Add(ref ptr, 1);
+        }
+        return result;
+    }
+
+    [Benchmark]
+    public int Vectorized_WidenLoad_CustomWiden_Unrolled_Indexing() {
+        var data = _data;
+        ref byte ptr = ref MemoryMarshal.GetArrayDataReference(data);
+        Vector256<int> sum = Vector256<int>.Zero;
+        Vector256<ushort> mask = Vector256.Create((ushort)0xff);
+        Vector256<uint> widenMask = Vector256.Create((uint)ushort.MaxValue);
+        nint i = 0;
+        if (data.Length >= Vector256<byte>.Count * 4) {
+            do {
+                Vector256<ushort> offload = Vector256<ushort>.Zero;
+                int index = 0;
+                while (index < 128 && i <= data.Length - Vector256<byte>.Count * 4) {
+
+                    Vector256<ushort> vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+
+                    vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i + Vector256<byte>.Count)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+
+                    vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i + Vector256<byte>.Count * 2)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+
+                    vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i + Vector256<byte>.Count * 3)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+
+                    index += 4;
+                    i += Vector256<byte>.Count * 4;
+
+                }
+                while (index < 128 && i <= data.Length - Vector256<byte>.Count) {
+                    index++;
+                    Vector256<ushort> vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+                    i += Vector256<byte>.Count;
+                }
+                sum += (offload.AsUInt32() & widenMask).AsInt32();
+                sum += Vector256.ShiftRightLogical(offload.AsUInt32(), 16).AsInt32();
+
+            } while (i <= data.Length - Vector256<byte>.Count);
+        } else if (data.Length >= Vector256<byte>.Count) {
+            do {
+                Vector256<ushort> offload = Vector256<ushort>.Zero;
+                int index = 0;
+                while (index < 128 && i <= data.Length - Vector256<byte>.Count) {
+                    index++;
+                    Vector256<ushort> vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i)).AsUInt16();
+                    offload += vec & mask;
+                    offload += Vector256.ShiftRightLogical(vec, 8);
+                    i += Vector256<byte>.Count;
+                }
+            } while (i <= data.Length - Vector256<byte>.Count);
+        }
+        int result = Vector256.Sum(sum);
+        for (; i < data.Length; i++) {
+            result += Unsafe.Add(ref ptr, i);
         }
         return result;
     }
