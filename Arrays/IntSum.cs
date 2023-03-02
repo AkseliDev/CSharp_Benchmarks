@@ -153,7 +153,7 @@ public class IntSum : IBenchmark {
 
         int sum = 0;
         nint i;
-        for(i = 0; i < data.Length - 4; i += 4) {
+        for(i = 0; i <= data.Length - 4; i += 4) {
             sum += Unsafe.Add(ref start, i);
             sum += Unsafe.Add(ref start, i + 1);
             sum += Unsafe.Add(ref start, i + 2);
@@ -170,7 +170,7 @@ public class IntSum : IBenchmark {
         var data = _data;
         Vector<int> sum = Vector<int>.Zero;
         int i;
-        for(i = 0; i < data.Length - Vector<int>.Count; i += Vector<int>.Count) {
+        for(i = 0; i <= data.Length - Vector<int>.Count; i += Vector<int>.Count) {
             sum += new Vector<int>(data, i);
         }
         int result = Vector.Sum(sum);
@@ -185,7 +185,7 @@ public class IntSum : IBenchmark {
         var data = _data;
         Vector256<int> sum = Vector256<int>.Zero;
         int i;
-        for (i = 0; i < data.Length - Vector256<int>.Count; i += Vector256<int>.Count) {
+        for (i = 0; i <= data.Length - Vector256<int>.Count; i += Vector256<int>.Count) {
             sum += Vector256.LoadUnsafe(ref data[i]);
         }
         int result = Vector256.Sum(sum);
@@ -211,7 +211,7 @@ public class IntSum : IBenchmark {
             sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i + Vector256<int>.Count * 7));
             i += Vector256<int>.Count * 8;
         }
-        for (; i < data.Length - Vector256<int>.Count; i += Vector256<int>.Count) {
+        for (; i <= data.Length - Vector256<int>.Count; i += Vector256<int>.Count) {
             sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, i));
         }
         int result = Vector256.Sum(sum);
@@ -229,7 +229,7 @@ public class IntSum : IBenchmark {
         Vector256<int> sum = Vector256<int>.Zero;
 
         if (data.Length >= Vector256<int>.Count * 8) {
-            while (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 8))) {
+            while (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 8 - 1))) {
                 sum += Vector256.LoadUnsafe(ref r0);
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count));
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count * 2));
@@ -241,14 +241,14 @@ public class IntSum : IBenchmark {
                 r0 = ref Unsafe.Add(ref r0, Vector256<int>.Count * 8);
             }
 
-            if (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 4))) {
+            if (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 4 - 1))) {
                 sum += Vector256.LoadUnsafe(ref r0);
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count));
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count * 2));
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count * 3));
                 r0 = ref Unsafe.Add(ref r0, Vector256<int>.Count * 4);
             }
-            if (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 2))) {
+            if (Unsafe.IsAddressLessThan(ref r0, ref Unsafe.Subtract(ref end, Vector256<int>.Count * 2 - 1))) {
                 sum += Vector256.LoadUnsafe(ref r0);
                 sum += Vector256.LoadUnsafe(ref Unsafe.Add(ref r0, Vector256<int>.Count));
                 r0 = ref Unsafe.Add(ref r0, Vector256<int>.Count * 2);

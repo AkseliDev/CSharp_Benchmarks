@@ -22,28 +22,28 @@ public class ByteSum : IBenchmark {
     [GlobalSetup]
     public void GlobalSetup() {
         var data = new byte[Size];
-        
-        for(int i = 0; i < data.Length; i++) {
+
+        for (int i = 0; i < data.Length; i++) {
             data[i] = (byte)i;
         }
 
         _data = data;
     }
-    
+
     [Benchmark]
     public int For() {
         var data = _data;
         int sum = 0;
-        for(int i = 0; i < data.Length; i++) {
+        for (int i = 0; i < data.Length; i++) {
             sum += data[i];
         }
         return sum;
     }
-    
+
     [Benchmark]
     public int ForEach() {
         int sum = 0;
-        foreach(int value in _data) {
+        foreach (int value in _data) {
             sum += value;
         }
         return sum;
@@ -64,7 +64,7 @@ public class ByteSum : IBenchmark {
         var data = _data;
         int sum = 0;
         int i;
-        for (i = 0; i < data.Length - 4; i += 4) {
+        for (i = 0; i <= data.Length - 4; i += 4) {
             sum += data[i];
             sum += data[i + 1];
             sum += data[i + 2];
@@ -84,7 +84,7 @@ public class ByteSum : IBenchmark {
         int sumC = 0;
         int sumD = 0;
         int i;
-        for (i = 0; i < data.Length - 4; i += 4) {
+        for (i = 0; i <= data.Length - 4; i += 4) {
             sumA += data[i];
             sumB += data[i + 1];
             sumC += data[i + 2];
@@ -119,7 +119,7 @@ public class ByteSum : IBenchmark {
 
         var data = _data;
         ref byte start = ref MemoryMarshal.GetArrayDataReference(data);
-        
+
         int sum = 0;
         for (nint i = 0; i < data.Length; i++) {
             sum += Unsafe.Add(ref start, i);
@@ -157,7 +157,7 @@ public class ByteSum : IBenchmark {
 
         int sum = 0;
         nint i;
-        for (i = 0; i < data.Length - 4; i += 4) {
+        for (i = 0; i <= data.Length - 4; i += 4) {
             sum += Unsafe.Add(ref start, i);
             sum += Unsafe.Add(ref start, i + 1);
             sum += Unsafe.Add(ref start, i + 2);
@@ -185,7 +185,7 @@ public class ByteSum : IBenchmark {
 
             if (data.Length >= Vector256<short>.Count) {
 
-                byte* vEnd = end - Vector256<short>.Count;
+                byte* vEnd = end - Vector256<short>.Count - 1;
 
                 do {
                     Vector256<short> offload = Vector256<short>.Zero;
@@ -212,7 +212,7 @@ public class ByteSum : IBenchmark {
             return result;
         }
     }
-    
+
     // This algorithm loads a V256<ushort> 2 times with a 1 byte offset
     // then shaves off the low/high bytes of the ushorts
     // the sum is calculated using ushorts until an overflow is possible
@@ -228,7 +228,7 @@ public class ByteSum : IBenchmark {
 
         if (data.Length >= Vector256<byte>.Count + 1) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count + 1);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
@@ -268,7 +268,7 @@ public class ByteSum : IBenchmark {
 
         if (data.Length >= Vector256<byte>.Count + 1) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count + 1);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
@@ -308,7 +308,7 @@ public class ByteSum : IBenchmark {
 
         if (data.Length >= Vector256<byte>.Count) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
@@ -349,7 +349,7 @@ public class ByteSum : IBenchmark {
 
         if (data.Length >= Vector256<byte>.Count) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
@@ -390,14 +390,14 @@ public class ByteSum : IBenchmark {
 
         if (data.Length >= Vector256<byte>.Count * 4) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
 
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
 
                 int index = 0;
-                while(index < 128 && Unsafe.IsAddressLessThan(ref ptr, ref Unsafe.Subtract(ref end, Vector256<byte>.Count * 4))) {
+                while (index < 128 && Unsafe.IsAddressLessThan(ref ptr, ref Unsafe.Subtract(ref end, Vector256<byte>.Count * 4 - 1))) {
 
                     index += 4;
 
@@ -435,7 +435,7 @@ public class ByteSum : IBenchmark {
 
         } else if (data.Length >= Vector256<byte>.Count) {
 
-            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count);
+            ref byte vEnd = ref Unsafe.Subtract(ref end, Vector256<byte>.Count - 1);
 
             do {
                 Vector256<ushort> offload = Vector256<ushort>.Zero;
