@@ -510,18 +510,6 @@ public class ByteSum : IBenchmark {
                 sum += Vector256.ShiftRightLogical(offload.AsUInt32(), 16).AsInt32();
 
             } while (i <= data.Length - Vector256<byte>.Count);
-        } else if (data.Length >= Vector256<byte>.Count) {
-            do {
-                Vector256<ushort> offload = Vector256<ushort>.Zero;
-                int index = 0;
-                while (index < 128 && i <= data.Length - Vector256<byte>.Count) {
-                    index++;
-                    Vector256<ushort> vec = Vector256.LoadUnsafe(ref Unsafe.Add(ref ptr, i)).AsUInt16();
-                    offload += vec & mask;
-                    offload += Vector256.ShiftRightLogical(vec, 8);
-                    i += Vector256<byte>.Count;
-                }
-            } while (i <= data.Length - Vector256<byte>.Count);
         }
         int result = Vector256.Sum(sum);
         for (; i < data.Length; i++) {
