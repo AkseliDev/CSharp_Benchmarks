@@ -3,6 +3,7 @@
 ## Table of Contents
 - [IntSum](#IntSum)
 - [ByteSum](#ByteSum)
+- [EvenNumbers](#EvenNumbers)
 
 
 ### IntSum
@@ -70,3 +71,35 @@ Results:
 | Vectorized_WidenLoad_CustomWiden_Unrolled | 1000 |  18.67 ns | 0.028 ns | 0.025 ns |
 | Vectorized_WidenLoad_CustomWiden_Unrolled_Indexing | 1000 | 18.69 ns | 0.055 ns | 0.046 ns |
 
+### EvenNumbers
+
+Description: Counting even numbers in an array
+
+Source: [EvenNumbers.cs](https://github.com/AkseliDev/CSharp_Benchmarks/blob/master/Arrays/EvenNumbers.cs)
+
+| Ranks               | Name                                |
+| ------------------- |:------------------------------------|
+| Fastest method      | CountEvenNumbers_VectorizedUnrolled |
+| Fastest safe method | CountEvenNumbers_Unrolled           |
+| Slowest method      | CountEvenNumbers                    |
+
+Results:
+|                               Method |   Size |         Mean |       Error |      StdDev |
+|------------------------------------- |------- |-------------:|------------:|------------:|
+|                     CountEvenNumbers |  10000 |  32,291.4 ns |    92.37 ns |    81.89 ns |
+|               CountEvenNumbers_Local |  10000 |  30,300.2 ns |   124.25 ns |   110.15 ns |
+|          CountEvenNumbers_Branchless |  10000 |   4,857.7 ns |    13.92 ns |    13.02 ns |
+| CountEvenNumbers_BranchlessUsingOdds |  10000 |   4,040.2 ns |    26.05 ns |    21.75 ns |
+|            CountEvenNumbers_Unrolled |  10000 |   2,760.7 ns |     5.91 ns |     4.93 ns |
+|      CountEvenNumbers_SafeVectorized |  10000 |     978.6 ns |     3.65 ns |     3.42 ns |
+|          CountEvenNumbers_Vectorized |  10000 |     647.2 ns |     1.65 ns |     1.55 ns |
+|  CountEvenNumbers_VectorizedUnrolled |  10000 |     356.9 ns |     1.96 ns |     1.83 ns |
+
+|                     CountEvenNumbers | 100000 | 352,125.4 ns | 1,103.18 ns | 1,031.91 ns |
+|               CountEvenNumbers_Local | 100000 | 344,026.5 ns |   469.27 ns |   438.95 ns |
+|          CountEvenNumbers_Branchless | 100000 |  49,109.3 ns |   151.85 ns |   118.55 ns |
+| CountEvenNumbers_BranchlessUsingOdds | 100000 |  39,392.9 ns |   423.23 ns |   395.89 ns |
+|            CountEvenNumbers_Unrolled | 100000 |  27,494.9 ns |    70.48 ns |    58.86 ns |
+|      CountEvenNumbers_SafeVectorized | 100000 |   9,926.9 ns |    37.58 ns |    35.15 ns |
+|          CountEvenNumbers_Vectorized | 100000 |   6,410.3 ns |    36.08 ns |    33.75 ns |
+|  CountEvenNumbers_VectorizedUnrolled | 100000 |   3,635.3 ns |    26.42 ns |    22.06 ns |
