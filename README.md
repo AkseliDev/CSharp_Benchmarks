@@ -7,3 +7,4 @@ Set of C# benchmarks, the goal is to create the most optimized solution and stud
   - [Arrays](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays)
     - [IntSum](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#IntSum)
     - [ByteSum](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#ByteSum)
+    - [EvenNumbers](https://github.com/AkseliDev/CSharp_Benchmarks/tree/master/Arrays#EvenNumbers)
