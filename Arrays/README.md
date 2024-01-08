@@ -94,7 +94,6 @@ Results:
 |      CountEvenNumbers_SafeVectorized |  10000 |     978.6 ns |     3.65 ns |     3.42 ns |
 |          CountEvenNumbers_Vectorized |  10000 |     647.2 ns |     1.65 ns |     1.55 ns |
 |  CountEvenNumbers_VectorizedUnrolled |  10000 |     356.9 ns |     1.96 ns |     1.83 ns |
-
 |                     CountEvenNumbers | 100000 | 352,125.4 ns | 1,103.18 ns | 1,031.91 ns |
 |               CountEvenNumbers_Local | 100000 | 344,026.5 ns |   469.27 ns |   438.95 ns |
 |          CountEvenNumbers_Branchless | 100000 |  49,109.3 ns |   151.85 ns |   118.55 ns |
